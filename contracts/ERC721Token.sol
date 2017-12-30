@@ -1,14 +1,14 @@
 pragma solidity 0.4.18;
 
-import "./ERC721Interface.sol";
+import "./ERC721.sol";
 
-contract ERC721Token is ERC721Interface {
+contract ERC721Token is ERC721 {
 
-    string public constant name = "My Non Fungible Token";
-    string public constant symbol = "MNFT";
+    string public constant _name = "My Non Fungible Token";
+    string public constant _symbol = "MNFT";
 
     struct Token {
-        address minedBy;
+        address mintedBy;
         uint64 mintedAt;
     }
 
@@ -73,20 +73,28 @@ contract ERC721Token is ERC721Interface {
         _;
     }
 
-    function totalSupply() constant returns (uint256 totalSupply) {
-        totalSupply = tokens.length;
+    function name() public constant returns (string tokenName) {
+        return _name;
     }
 
-    function balanceOf(address _owner) constant returns (uint256 balance) {
+    function symbol() public constant returns (string tokenSymbol) {
+        return _symbol;
+    }
+
+    function totalSupply() public constant returns (uint256 tokenTotalSupply) {
+        tokenTotalSupply = tokens.length;
+    }
+
+    function balanceOf(address _owner) public constant returns (uint256 balance) {
         balance = ownershipTokenCount[_owner];
     }
 
-    function ownerOf(uint256 _tokenId) constant available(_tokenId) returns (address owner) {
+    function ownerOf(uint256 _tokenId) public constant available(_tokenId) returns (address owner) {
         owner = tokenIndexToOwner[_tokenId];
     }
 
-    function approve(address _to, uint256 _tokenId) available(_tokenId) own(_tokenId) notToSender(_to) {
-        previouslyApprovedTo = tokenIndexToApproved[_tokenId];
+    function approve(address _to, uint256 _tokenId) public available(_tokenId) own(_tokenId) notToSender(_to) {
+        address previouslyApprovedTo = tokenIndexToApproved[_tokenId];
         tokenIndexToApproved[_tokenId] = _to;
 
         if ((previouslyApprovedTo == address(0)) && (_to == address(0)) ) {
@@ -118,11 +126,11 @@ contract ERC721Token is ERC721Interface {
         Transfer(_from, _to, _tokenId);
     }
 
-    function takeOwnership(uint256 _tokenId) available(_tokenId) approved(_tokenId) notOwn(_tokenId) {
+    function takeOwnership(uint256 _tokenId) public available(_tokenId) approved(_tokenId) notOwn(_tokenId) {
         transferToken(tokenIndexToOwner[_tokenId], msg.sender, _tokenId);
     }
 
-    function transfer(address _to, uint256 _tokenId) available(_tokenId) own(_tokenId) notToBurn(_to) {
+    function transfer(address _to, uint256 _tokenId) public available(_tokenId) own(_tokenId) notToBurn(_to) {
         transferToken(msg.sender, _to, _tokenId);
     }
 
@@ -142,17 +150,17 @@ contract ERC721Token is ERC721Interface {
         transferToken(address(0), _owner, tokenId);
     }
 
-    function mint() returns(uint256 tokenId) {
+    function mint() public returns(uint256 tokenId) {
         tokenId = mintToken(msg.sender);
     }
 
-    function getToken(uint256 _tokenId) view returns(address mintedBy, uint64 mintedAt) {
+    function getToken(uint256 _tokenId) public view returns(address mintedBy, uint64 mintedAt) {
         Token memory token = tokens[_tokenId];
         mintedBy = token.mintedBy;
         mintedAt = token.mintedAt;
     }
 
-    function tokensOfOwner(address _owner) view returns(uint256[]) {
+    function tokensOfOwner(address _owner) public view returns(uint256[]) {
         uint256 balance = balanceOf(_owner);
         if (balance == 0) {
             return new uint256[](0);
@@ -161,7 +169,7 @@ contract ERC721Token is ERC721Interface {
             uint256 maxTokenId = totalSupply();
             uint256 idx = 0;
             uint256 tokenId = 0;
-            for (tokenId = 1; tokenId < maxTokenId; tokeId++) {
+            for (tokenId = 1; tokenId < maxTokenId; tokenId++) {
                 if (tokenIndexToOwner[tokenId] == _owner) {
                     result[idx] = tokenId;
                     idx++;
@@ -172,13 +180,13 @@ contract ERC721Token is ERC721Interface {
         return result;
     }
 
-    function tokenOfOwnerByIndex(address _owner, uint256 _index) constant returns (uint tokenId) {
-        _tokensOfOwner = tokensOfOwner(_owner);
+    function tokenOfOwnerByIndex(address _owner, uint256 _index) public constant returns (uint tokenId) {
+        uint256[] memory _tokensOfOwner = tokensOfOwner(_owner);
         require(_index < _tokensOfOwner.length);
         tokenId = _tokensOfOwner[_index];
     }
 
-    function tokenMetadata(uint256 _tokenId) constant returns(string infoUrl) {
+    function tokenMetadata(uint256 _tokenId) public constant returns(string infoUrl) {
         return 'https://google.com';
     }
 }

@@ -1,6 +1,6 @@
 pragma solidity 0.4.18;
 
-contract ERC721Interface {
+contract ERC721 {
     /**
      * spec: https://github.com/ethereum/eips/issues/721
      */
@@ -13,23 +13,23 @@ contract ERC721Interface {
      * OPTIONAL
      * Returns the name of the collection of NFTs managed by this contract. - e.g. "My Non-Fungibles".
      */
-    function name() constant returns (string name);
+    function name() public constant returns (string tokenName);
 
     /**
      * OPTIONAL
      * Returns a short string symbol referencing the entire collection of NFTs managed in this contract. e.g. "MNFT".
      */
-    function symbol() constant returns (string symbol);
+    function symbol() public constant returns (string tokenSymbol);
 
     /**
      * Returns the total number of NFTs currently tracked by this contract.
      */
-    function totalSupply() constant returns (uint256 totalSupply);
+    function totalSupply() public constant returns (uint256 tokenTotalSupply);
 
     /**
      * Returns the number of NFTs assigned to address _owner.
      */
-    function balanceOf(address _owner) constant returns (uint256 balance);
+    function balanceOf(address _owner) public constant returns (uint256 balance);
 
     /**
      * Basic Ownership section
@@ -41,7 +41,7 @@ contract ERC721Interface {
      * MUST throw if _tokenID does not represent an NFT currently tracked by this contract
      * MUST NOT return 0 (NFTs assigned to the zero address are considered destroyed, and queries about them should throw).
      */
-    function ownerOf(uint256 _tokenId) constant returns (address owner);
+    function ownerOf(uint256 _tokenId) public constant returns (address owner);
 
     /**
      * Grants approval for address _to to take possession of the NFT with ID _tokenId
@@ -58,7 +58,7 @@ contract ERC721Interface {
      * MUST emit an Approval event if _to is already the currently approved address and this call otherwise has no effect
      * MUST emit an Approval event Approval(0, _tokenId) if there was an outstanding approval and implicit clearing of approval via ownership transfer was made
      */
-    function approve(address _to, uint256 _tokenId);
+    function approve(address _to, uint256 _tokenId) public;
 
     /**
      * Assigns the ownership of the NFT with ID _tokenId to msg.sender if and only if msg.sender currently has approval
@@ -70,7 +70,7 @@ contract ERC721Interface {
      * MUST throw if msg.sender already has ownership of _tokenId
      * MUST clear pending approval upon success transfer
      */
-    function takeOwnership(uint256 _tokenId);
+    function takeOwnership(uint256 _tokenId) public;
 
     /**
      * Assigns the ownership of the NFT with ID _tokenId to _to if and only if msg.sender == ownerOf(_tokenId)
@@ -84,7 +84,7 @@ contract ERC721Interface {
      * MUST allow the current owner to "transfer" a token to themselves. This "no-op transfer" MUST be considered a successful transfer,
      * and therefore MUST fire a Transfer event (with the same address for _from and _to)
      */
-    function transfer(address _to, uint256 _tokenId);
+    function transfer(address _to, uint256 _tokenId) public;
 
     /**
      * OPTIONAL
@@ -97,7 +97,7 @@ contract ERC721Interface {
      *   ownerTokens[i] = nonFungibleContract.tokenOfOwnerByIndex(owner, i);
      * }
      */
-    function tokenOfOwnerByIndex(address _owner, uint256 _index) constant returns (uint tokenId);
+    function tokenOfOwnerByIndex(address _owner, uint256 _index) public constant returns (uint tokenId);
 
     /**
      * NFT Metadata section
@@ -115,7 +115,7 @@ contract ERC721Interface {
      * Each metadata subpath (including subpaths not defined in this standard) MUST contain a sub-path default
      * leading to a file containing the default (i.e. unlocalized) version of the data for that metadata element.
      */
-    function tokenMetadata(uint256 _tokenId) constant returns (string infoUrl);
+    function tokenMetadata(uint256 _tokenId) public constant returns (string infoUrl);
 
     /**
      * Events section
